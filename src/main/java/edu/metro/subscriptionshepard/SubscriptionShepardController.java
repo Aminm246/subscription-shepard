@@ -1,3 +1,4 @@
+
 package edu.metro.subscriptionshepard;
 
 // Import needed Spring and Java classes for controllers, security, and data
@@ -87,7 +88,7 @@ public class SubscriptionShepardController {
     public String retrieveAll(@PathVariable Long id, Model model){
         // Find the subscription by id and add it to the model
         model.addAttribute("subscription", subService.retrieve(id).orElse(new Subscription()));
-        return "/subscription";
+        return "subscription";
     }
 
     // Delete a subscription by its id and go back to the dashboard
