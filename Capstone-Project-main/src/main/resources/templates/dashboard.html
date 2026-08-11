@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <!-- Link to Bootstrap CSS for styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Link to Chart.js for drawing the donut chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Set background color and text color for the whole page */
+        body {
+            background-color: skyblue;
+            color: white;
+        }
+        /* Center the main heading */
+        h1 {
+            text-align: center;
+        }
+        /* Style the subscription table */
+        .table {
+            color: white;
+            width: 94%;
+            margin-left: 3%;
+            margin-right: 3%;
+            border-collapse: collapse;
+            text-align: center;
+            align-content: center;
+        }
+        /* Style the table header row */
+        thead>tr {
+            background-color: #229954;
+            font-size: 20px;
+        }
+        /* Set the height for each table row and header */
+        tr, thead {
+            height: 50px;
+        }
+        /* Alternate row colors for the table for better readability */
+        .table-striped>tbody>tr:nth-of-type(odd) {
+            background-color: #52be80;
+        }
+        .table-striped>tbody>tr:nth-of-type(even) {
+            background-color: #7dcea0;
+        }
+        .table-striped>tbody>tr:nth-of-type(odd)>td {
+            color: white;
+        }
+        /* Style for the chart and summary section */
+        .chart-section {
+            display: flex;
+            margin-top: 2rem;
+            margin-bottom: 1.5rem;
+            background-color: skyblue;
+        }
+        /* Style the donut chart container */
+        .chart-container {
+            width: 65%;
+            padding-left: 150px;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+        /* Style the summary container next to the chart */
+        .summary-container {
+            width: 35%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        /* Style for the add new subscription and logout buttons */
+        #addNew {
+            float: right;
+            margin-right: 3%;
+            margin-bottom: 3%;
+        }
+        #btnAdd {
+            background-color: #377af0;
+            border: 1px transparent;
+            border-radius: 20px;
+        }
+        #btnAdd:hover {
+            border: 1px blue solid;
+        }
+        #btnDelete {
+            background-color: #ec7063;
+            border-radius: 20px;
+        }
+        #btnEdit {
+            background-color: #377af0;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<!-- Start the main content of the page -->
+<body class="container mt-4">
+<!-- Main heading for the dashboard -->
+<h1>Subscription Shepherd Dashboard</h1>
+<!-- Success message with the username after login -->
+<div class="alert alert-success" style="margin-top: 10px; margin-bottom: 15px;">
+    Welcome, <span th:text="${username}">User</span>! You've successfully logged in.
+</div>
+<!-- Section for the donut chart and monthly summary -->
+<div class="chart-section">
+    <div class="chart-container">
+        <h5>Subscription Breakdown</h5>
+        <!-- This is where the donut chart will be drawn -->
+        <div style="height: 300px; width: 100%;">
+            <canvas id="subscriptionChart"></canvas>
+        </div>
+    </div>
+    <div class="summary-container">
+        <h5>Monthly Summary</h5>
+        <!-- Show the total monthly spending formatted as currency -->
+        <h2 class="text-primary" th:text="${'$' + #numbers.formatDecimal(totalMonthly, 0, 'COMMA', 2, 'POINT')}">$130.82</h2>
+        <p>Total Monthly Spending</p>
+    </div>
+</div>
+
+<!-- Responsive table for listing all subscriptions -->
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Duration</th>
+            <th>Payment Frequency</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Loop through each subscription in the list and create a table row -->
+        <tr th:each="subscription : ${subscriptions}">
+            <td>
+                <!-- Show an icon and link for each known subscription type -->
+                <th:block th:switch="${subscription.name.toLowerCase()}">
+                    <th:block th:case="'netflix'">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/Netflix_logo.svg" alt="Netflix" style="width: 30px; height: auto; margin-right: 10px;">
+                        <a href="https://www.netflix.com" target="_blank" style="color: white;" th:text="${subscription.name}">Netflix</a>
+                    </th:block>
+                    <th:block th:case="'disney+'">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg" alt="Disney+" style="width: 30px; height: auto; margin-right: 10px;">
+                        <a href="https://www.disneyplus.com" target="_blank" style="color: white;" th:text="${subscription.name}">Disney+</a>
+                    </th:block>
+                    <th:block th:case="'spotify'">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Spotify_icon.svg" alt="Spotify" style="width: 30px; height: auto; margin-right: 10px;">
+                        <a href="https://www.spotify.com" target="_blank" style="color: white;" th:text="${subscription.name}">Spotify</a>
+                    </th:block>
+                    <th:block th:case="'rent'">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1946/1946436.png" alt="Rent" style="width: 30px; height: auto; margin-right: 10px;">
+                        <a href="https://www.apartments.com/" target="_blank" style="color: white;" th:text="${subscription.name}">Rent</a>
+                    </th:block>
+                    <!-- More cases for other subscription types like Hulu Max Paramount Amazon etc -->
+                    <!-- Default case if the subscription name does not match any known type -->
+                    <th:block th:case="*">
+                        <span th:text="${subscription.name}"></span>
+                    </th:block>
+                </th:block>
+            </td>
+            <!-- Show the price, duration, and payment frequency for each subscription -->
+            <td th:text="${subscription.price}"></td>
+            <td th:text="${subscription.duration}"></td>
+            <td th:text="${subscription.paymentFrequency}"></td>
+            <td>
+                <!-- Edit and delete buttons for each subscription -->
+                <a th:href="@{/retrieve/{id}(id=${subscription.id})}" id="btnEdit" class="btn btn-sm btn-primary">Edit</a>
+                <a th:href="@{/delete/{id}(id=${subscription.id})}" id="btnDelete" class="btn btn-sm btn-danger"
+                   onclick="return confirm('Are you sure you want to delete this subscription?')">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<!-- Add New Subscription and Logout buttons -->
+<div id="addNew">
+    <!-- Button to go to the add new subscription form -->
+    <a href="/addSpending" id="btnAdd" class="btn btn-success">Add New Subscription</a>
+    <!-- Logout form to log out the current user -->
+    <!-- th:action tells Thymeleaf to submit the form to the /logout URL -->
+    <form th:action="@{/logout}" method="post" class="d-inline" style="margin-left: 10px;">
+        <button type="submit" class="btn btn-danger" style="border-radius: 20px;">Logout</button>
+    </form>
+</div>
+
+<!-- JavaScript for drawing the donut chart using Chart.js -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    // Get the list of subscriptions from the backend as a JavaScript array
+    const subscriptions = /*[[${subscriptions}]]*/ [];
+    // Arrays to store the chart labels and data
+    const names = [];
+    const prices = [];
+    const colors = [];
+
+    // Function to generate a random color for each chart segment
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    // Loop through each subscription and prepare the data for the chart
+    subscriptions.forEach(subscription => {
+        names.push(subscription.name);
+        let monthlyPrice = subscription.price;
+        // Convert price to monthly if needed
+        switch (subscription.paymentFrequency.toLowerCase()) {
+            case 'yearly': monthlyPrice /= 12; break;
+            case 'quarterly': monthlyPrice /= 3; break;
+            case 'weekly': monthlyPrice *= 4.33; break;
+        }
+        prices.push(monthlyPrice);
+        colors.push(getRandomColor());
+    });
+
+    // Get the canvas element and create the donut chart
+    const ctx = document.getElementById('subscriptionChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: names,
+            datasets: [{
+                data: prices,
+                backgroundColor: colors
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, // Allows the chart to fill the container height
+            plugins: {
+                legend: { position: 'right' },
+                tooltip: { callbacks: { label: ctx => `$${ctx.raw.toFixed(2)}` } }
+            }
+        }
+    });
+    /*]]>*/
+</script>
+
+</body>
+</html>
