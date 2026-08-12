@@ -22,7 +22,7 @@ A full-stack subscription tracker built as a team capstone, independently contai
 - **Containerized with a multi-stage Docker build**, verified locally before every deploy
 - **Deployed on Google Cloud Run**, auto-scaling and cost-controlled to run at $0/month
 - **Push-to-deploy pipeline**, every merge to `main` builds, tests, and ships automatically via GitHub Actions
-- **Every real bug documented** with root cause and fix — see the [troubleshooting log](docs/TROUBLESHOOTING.md)
+- **Every real bug documented** with root cause and fixes, see the [troubleshooting log](docs/TROUBLESHOOTING.md)
 ---
  
 ## What It Does
