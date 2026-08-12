@@ -13,10 +13,10 @@ GitHub (push to main)
 GitHub Actions  ──►  Workload Identity Federation (no stored keys)
    │
    ▼
-Cloud Build  ──►  Artifact Registry (Docker image)
+Cloud Build     ──►  Artifact Registry (Docker image)
    │
    ▼
-Cloud Run  ──►  containerized Spring Boot app (in-memory H2)
+Cloud Run       ──►  containerized Spring Boot app (in-memory H2)
 ```
  
 ---
