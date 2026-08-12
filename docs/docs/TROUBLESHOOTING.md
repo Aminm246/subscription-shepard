@@ -1,4 +1,4 @@
-🐛 Troubleshooting Log
+# 🐛 Troubleshooting Log
 
 Real issues encountered while containerizing and deploying this app — root causes and fixes, kept as documentation of the actual debugging process.
 
