@@ -82,9 +82,9 @@ docker run -p 8080:8080 -e PORT=8080 subscription-shepard
  
 ```
 src/main/java/edu/metro/subscriptionshepard/   → application code
-src/main/resources/templates/                   → Thymeleaf views
-docs/                                            → deployment & troubleshooting documentation
-Dockerfile                                       → multi-stage container build
+src/main/resources/templates/                  → Thymeleaf views
+docs/                                          → deployment & troubleshooting documentation
+Dockerfile                                     → multi-stage container build
 ```
  
 ---
