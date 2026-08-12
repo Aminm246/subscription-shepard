@@ -1,8 +1,8 @@
-📘 Deployment Guide
+# 📘 Deployment Guide
 
 How Subscription Shepard is containerized, secured, and deployed to Google Cloud Run.
 
-🗺️ Architecture Overview
+# 🗺️ Architecture Overview
 GitHub (push to main)
    │
    ▼
@@ -23,7 +23,7 @@ Cloud Run containers have an ephemeral, stateless filesystem — anything writte
 
 [!WARNING] Trade-off: data resets on cold start, and concurrent traffic across multiple Cloud Run instances does not share state — each instance holds its own isolated in-memory database. A production version would use Cloud SQL (Postgres/MySQL) instead.
 
-🐳 Dockerfile
+# 🐳 Dockerfile
 
 A multi-stage build:
 
@@ -37,7 +37,7 @@ The app respects Cloud Run's dynamically assigned $PORT via:
 
 properties
 server.port=${PORT:8080}
-🔑 CI/CD Security: Workload Identity Federation
+# 🔑 CI/CD Security: Workload Identity Federation
 
 [!IMPORTANT] Instead of generating and storing a GCP service account key (a long-lived credential) as a GitHub secret, this project uses Workload Identity Federation (WIF) — Google's current recommended approach for keyless CI/CD.
 
@@ -48,14 +48,14 @@ roles/iam.serviceAccountUser
 A Workload Identity Pool and OIDC provider trust GitHub's own token issuer.
 The trust binding is scoped to this exact repository (Aminm246/subscription-shepard) — no other GitHub repo can impersonate this service account.
 At deploy time, GitHub Actions exchanges its OIDC token for a short-lived GCP access token. No key file ever exists on disk or in GitHub Secrets.
-💰 Cost Controls
+# 💰 Cost Controls
 Control	Purpose
 --max-instances=1	Prevents traffic spikes from spinning up multiple billed instances; avoids multi-instance database inconsistency
 No --min-instances set	Service scales to zero when idle
 Cloud Run always-free tier	2M requests/month, 360,000 GiB-seconds — covers expected traffic at $0/month
 GCP Spend Cap (Cloud Run)	Hard limit as a safety net
 Project-wide budget alert	Email notification at defined spend thresholds
-🧪 Local Testing
+@ 🧪 Local Testing
 bash
 # Build and run the container locally — identical to how Cloud Run runs it
 Step 1: docker build -t subscription-shepard-test .
