@@ -58,7 +58,8 @@ Project-wide budget alert	Email notification at defined spend thresholds
 🧪 Local Testing
 bash
 # Build and run the container locally — identical to how Cloud Run runs it
-docker build -t subscription-shepard-test .
-docker run -p 8080:8080 -e PORT=8080 subscription-shepard-test
+Step 1: docker build -t subscription-shepard-test .
+
+Step 2: docker run -p 8080:8080 -e PORT=8080 subscription-shepard-test
 
 Visit http://localhost:8080
