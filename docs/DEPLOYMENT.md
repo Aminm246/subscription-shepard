@@ -88,8 +88,7 @@ The initial deployment was configured entirely by hand in the Cloud Console, to 
 2. A Workload Identity Pool and OIDC provider were configured, trusting GitHub's own token issuer (`https://token.actions.githubusercontent.com`).
 3. The trust binding is scoped to **this exact repository** (`Aminm246/subscription-shepard`) no other GitHub repo can impersonate this service account.
 4. `github-deployer` was explicitly granted **Service Account User** on the `subscription-shepard-runner` runtime identity, so it's permitted to deploy a revision that runs under that account (see [`TROUBLESHOOTING.md`](TROUBLESHOOTING.md) for the exact permission error this required fixing).
-5. At deploy time, GitHub Actions exchanges its OIDC token for a short-lived GCP access token via `google-github-actions/auth`. **No key file ever exists** on disk or in GitHub Secrets.
-Every push to `main` now builds a fresh image, pushes it to Artifact Registry, and deploys it to the same live Cloud Run service as a new revision fully automatically.
+5. At deploy time, GitHub Actions exchanges its OIDC token for a short-lived GCP access token via `google-github-actions/auth`. The action may create a temporary credential configuration file in the ephemeral GitHub Actions runner workspace so subsequent steps can authenticate. The file is automatically removed when the job finishes. **No long-lived service account key is stored in the repository or GitHub Secrets.** Every push to `main` now builds a fresh image, pushes it to Artifact Registry, and deploys it to the same live Cloud Run service as a new revision fully automatically.
  
 ---
  
