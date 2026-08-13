@@ -73,7 +73,6 @@ The initial deployment was configured entirely by hand in the Cloud Console, to 
 - **Billing** request-based, so cost only accrues while actively serving traffic
 - **Scaling** minimum instances `0` (scales to zero when idle, no cost while unused), maximum instances `1` (prevents concurrent instances from splitting the in-memory database, and caps worst case cost)
 - **Ingress** set to allow traffic from the internet. Once confirmed working, the Cloud Build trigger the Console had auto-created for continuous deployment was **disabled**, to avoid it competing with the GitHub Actions pipeline built in Phase 2.
- 
 ---
  
 ## 🔑 Phase 2: Automated, Keyless CI/CD
@@ -89,7 +88,20 @@ The initial deployment was configured entirely by hand in the Cloud Console, to 
 3. The trust binding is scoped to **this exact repository** (`Aminm246/subscription-shepard`) no other GitHub repo can impersonate this service account.
 4. `github-deployer` was explicitly granted **Service Account User** on the `subscription-shepard-runner` runtime identity, so it's permitted to deploy a revision that runs under that account (see [`TROUBLESHOOTING.md`](TROUBLESHOOTING.md) for the exact permission error this required fixing).
 5. At deploy time, GitHub Actions exchanges its OIDC token for a short-lived GCP access token via `google-github-actions/auth`. The action may create a temporary credential configuration file in the ephemeral GitHub Actions runner workspace so subsequent steps can authenticate. The file is automatically removed when the job finishes. **No long-lived service account key is stored in the repository or GitHub Secrets.** Every push to `main` now builds a fresh image, pushes it to Artifact Registry, and deploys it to the same live Cloud Run service as a new revision fully automatically.
+![Successful GitHub Actions deployment](images/ci-success.png)
+*A push to `main` triggering an automated build and deploy — authenticated via Workload Identity Federation, no stored credentials.*
  
+---
+ 
+## 🛡️ Security Practices
+ 
+Beyond the CI/CD identity model above, several application-level security practices are in place:
+ 
+- **Password hashing** user passwords are hashed with `BCryptPasswordEncoder` before storage; no plaintext passwords are ever persisted.
+- **CSRF protection** Spring Security's CSRF protection is enabled by default and correctly wired into forms that mutate state (e.g., the subscription edit form includes the CSRF token as a hidden field).
+- **Route-level authorization** only `/login`, `/register`, and static assets are publicly accessible; every other route requires an authenticated session.
+- **H2 console disabled in production** the H2 web console (`/h2-console`) is explicitly disabled in the deployed environment, since it was previously configured to permit unauthenticated access and would otherwise expose the live database to anyone with the URL.
+- **No credential files committed** `.gitignore` explicitly excludes `gha-creds-*.json`, the temporary credential file GitHub Actions' auth step generates at runtime, as defense-in-depth alongside the fact that WIF credentials are already short-lived and scoped to the runner's ephemeral workspace.
 ---
  
 ## 💰 Cost Controls
