@@ -1,21 +1,30 @@
 # Compiled output
+
 target/
 *.class
 
 # Old file-based H2 data (no longer used, but ignore just in case)
+
 /data/
 
 # IDE files
+
 .idea/
 *.iml
 .vscode/
 
 # Maven wrapper jar (regenerated automatically, don't need to commit the binary)
+
 .mvn/wrapper/maven-wrapper.jar
 
+# Google GitHub Actions temporary credentials
+gha-creds-*.json
+
 # OS files
+
 .DS_Store
 Thumbs.db
 
 # Logs
+
 *.log
