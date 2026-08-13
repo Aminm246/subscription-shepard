@@ -47,5 +47,5 @@ jobs:
           gcloud run deploy ${{ env.SERVICE_NAME }} \
             --image=$IMAGE_URI \
             --region=${{ env.REGION }} \
-            --service-account=subscription-shepard-runtime@${{ env.PROJECT_ID }}.iam.gserviceaccount.com \
+            --service-account=subscription-shepard-runner@${{ env.PROJECT_ID }}.iam.gserviceaccount.com \
             --allow-unauthenticated
