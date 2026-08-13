@@ -19,7 +19,7 @@ Phase 2 — Automated (GitHub Actions)
   GitHub (push to main)
      │
      ▼
-  GitHub Actions ──► Workload Identity Federation (no stored keys)
+  GitHub Actions ──► Workload Identity Federation (short-lived credential)
      │
      ▼
   Cloud Build    ──► Artifact Registry (Docker image)
