@@ -49,7 +49,7 @@ Originally built as a 4-person capstone project at Metropolitan State University
 ## Engineering Highlights
  
 > [!IMPORTANT]
-> **Keyless CI/CD.** Deployment authentication uses Workload Identity Federation instead of long-lived service account keys. GitHub's OIDC identity is exchanged for short-lived Google Cloud credentials at deploy time and is restricted to this exact repository. The authentication action may create a temporary credential configuration file on the ephemeral GitHub Actions runner, which is automatically removed when the job finishes. No long-lived service account key is stored in the repository or GitHub Secrets.
+> **Keyless CI/CD.** GitHub Actions authenticates to Google Cloud using GitHub OIDC and Workload Identity Federation rather than storing a long-lived Google Cloud service-account key. The federated identity is restricted to the `Aminm246/subscription-shepard` repository. Authentication uses short-lived Google Cloud credentials, with any temporary credential configuration generated on the ephemeral GitHub-hosted runner automatically cleaned up after the workflow. No long-lived service-account credentials are stored in GitHub Secrets or committed to the repository.
  
 **Manual-first infrastructure setup**
 Rather than scripting the initial deployment blind, the Cloud Run service, its dedicated runtime service account, and networking/scaling settings were all configured by hand through the GCP Console. Building a real working understanding of each setting before automating any of it.
