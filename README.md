@@ -57,6 +57,9 @@ Rather than scripting the initial deployment blind, the Cloud Run service, its d
 **Two-identity IAM model**
 The app's runtime identity (`subscription-shepard-runner`) and the CI/CD deploy identity (`github-deployer`) are deliberately separate, least-privilege service accounts. The deploy pipeline can *ship* a new revision, but has no broader access than that.
  
+**Defense-in-depth application security**
+Passwords hashed with BCrypt, CSRF protection enabled on all state-changing forms, route-level authorization requiring a session for every page beyond login/register, and the H2 web console disabled in production after confirming it was previously reachable without authentication. Full detail in [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
+ 
 **Stateless database design**
 Migrated from file-based to in-memory H2 to match Cloud Run's ephemeral container filesystem with a deliberate trade-off, explicitly documented rather than hidden. Full reasoning in [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
  
