@@ -49,7 +49,7 @@ Originally built as a 4-person capstone project at Metropolitan State University
 ## Engineering Highlights
  
 > [!IMPORTANT]
-> **Keyless CI/CD.** Deployment authentication uses Workload Identity Federation instead of downloaded service account keys which is GCP's current recommended security practice. GitHub's own OIDC token is exchanged for a short-lived GCP credential at deploy time, scoped to this exact repository. No key file is ever stored anywhere.
+> **Keyless CI/CD.** Deployment authentication uses Workload Identity Federation instead of long-lived service account keys. GitHub's OIDC identity is exchanged for short-lived Google Cloud credentials at deploy time and is restricted to this exact repository. The authentication action may create a temporary credential configuration file on the ephemeral GitHub Actions runner, which is automatically removed when the job finishes. No long-lived service account key is stored in the repository or GitHub Secrets.
  
 **Manual-first infrastructure setup**
 Rather than scripting the initial deployment blind, the Cloud Run service, its dedicated runtime service account, and networking/scaling settings were all configured by hand through the GCP Console. Building a real working understanding of each setting before automating any of it.
