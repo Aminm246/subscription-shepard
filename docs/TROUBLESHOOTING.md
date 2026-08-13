@@ -1,6 +1,6 @@
 # 🐛 Troubleshooting Log
  
-Real issues encountered while containerizing and deploying this app as well as root causes and fixes, kept as documentation of the actual debugging process.
+Real issues encountered while containerizing and deploying this app with root causes and fixes, kept as documentation of the actual debugging process.
  
 ---
  
@@ -14,7 +14,7 @@ failed to resolve source metadata: no match for platform in manifest: not found
 ```
  
 **Root cause**
-The Alpine-based `eclipse-temurin` image tags do not reliably publish builds for `arm64` (Apple Silicon / M-series Mac chips), so Docker could not find a compatible image for the local build machine.
+The Alpine based `eclipse-temurin` image tags do not reliably publish builds for `arm64` (Apple Silicon / M-series Mac chips), so Docker could not find a compatible image for the local build machine.
  
 **Fix**
 Switched the Dockerfile's base images from `17-jdk-alpine` / `17-jre-alpine` to `17-jdk-jammy` / `17-jre-jammy` (Ubuntu-based). Jammy tags are built for both `amd64` and `arm64`, fixing local builds on Apple Silicon while remaining fully compatible with Cloud Run's `amd64` runtime.
@@ -102,9 +102,11 @@ Re-ran the workflow, which then deployed successfully.
 Registering a username that should have been unique failed with "Username already taken," even on what appeared to be a fresh app run.
  
 **Root cause**
-Spring Boot DevTools performs a "soft restart" when re-running the app in IntelliJ. It reloads application code inside the same still running JVM process rather than starting a new one. Since the in-memory H2 database (`DB_CLOSE_DELAY=-1`) persists for the life of the JVM process, data survived across these soft restarts.
+Spring Boot DevTools performs a "soft restart" when re-running the app in IntelliJ, it reloads application code inside the same still running JVM process rather than starting a new one. Since the in-memory H2 database (`DB_CLOSE_DELAY=-1`) persists for the life of the JVM process, data survived across these soft restarts.
  
 **Resolution**
-Not a bug expected DevTools behavior. Confirmed by fully stopping the process (not just re-running) and observing the database correctly reset, which also confirmed the in-memory database resets on genuine Cloud Run cold starts, as intended.
+Not a bug with expected DevTools behavior. Confirmed by fully stopping the process (not just re-running) and observing the database correctly reset, which also confirmed the in-memory database resets on genuine Cloud Run cold starts, as intended.
+ 
+</details>
  
 </details>
