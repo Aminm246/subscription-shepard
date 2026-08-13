@@ -89,7 +89,7 @@ The initial deployment was configured entirely by hand in the Cloud Console, to 
 4. `github-deployer` was explicitly granted **Service Account User** on the `subscription-shepard-runner` runtime identity, so it's permitted to deploy a revision that runs under that account (see [`TROUBLESHOOTING.md`](TROUBLESHOOTING.md) for the exact permission error this required fixing).
 5. At deploy time, GitHub Actions exchanges its OIDC token for a short-lived GCP access token via `google-github-actions/auth`. The action may create a temporary credential configuration file in the ephemeral GitHub Actions runner workspace so subsequent steps can authenticate. The file is automatically removed when the job finishes. **No long-lived service account key is stored in the repository or GitHub Secrets.** Every push to `main` now builds a fresh image, pushes it to Artifact Registry, and deploys it to the same live Cloud Run service as a new revision fully automatically.
 ![Successful GitHub Actions deployment](images/ci-success.png)
-*A push to `main` triggering an automated build and deploy — authenticated via Workload Identity Federation, no stored credentials.*
+*A push to `main` triggering an automated build and deploy successfully authenticated via Workload Identity Federation with no stored credentials.*
  
 ---
  
