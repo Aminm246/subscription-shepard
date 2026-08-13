@@ -1,6 +1,6 @@
 # 🐛 Troubleshooting Log
  
-Real issues encountered while containerizing and deploying this app. Root causes and fixes, kept as documentation of the actual debugging process.
+Real issues encountered while containerizing and deploying this app — root causes and fixes, kept as documentation of the actual debugging process.
  
 ---
  
@@ -62,7 +62,7 @@ Manually created `.mvn/wrapper/maven-wrapper.properties` with the wrapper and di
 Clicking Edit on any subscription threw an unhandled 500 error, followed by a secondary error since no custom error page was configured.
  
 **Root cause**
-In `SubscriptionShepardController.java`, the `/retrieve/{id}` endpoint returned `"/subscription"` (leading slash) instead of `"subscription"`. Thymeleaf's template resolver could not resolve the leading-slash path to the actual `subscription.html` template. Every other controller method returned template names without a leading slash, this one was inconsistent.
+In `SubscriptionShepardController.java`, the `/retrieve/{id}` endpoint returned `"/subscription"` (leading slash) instead of `"subscription"`. Thymeleaf's template resolver could not resolve the leading-slash path to the actual `subscription.html` template. Every other controller method returned template names without a leading slash — this one was inconsistent.
  
 **Fix**
 ```diff
@@ -74,16 +74,37 @@ In `SubscriptionShepardController.java`, the `/retrieve/{id}` endpoint returned 
 ---
  
 <details>
+<summary><strong>🔴 GitHub Actions deploy failed: "Permission 'iam.serviceaccounts.actAs' denied"</strong></summary>
+<br>
+**Symptom**
+```
+ERROR: (gcloud.run.deploy) PERMISSION_DENIED: Permission 'iam.serviceaccounts.actAs'
+denied on service account subscription-shepard-runtime@subscription-shepard.iam.gserviceaccount.com
+(or it may not exist). This command is authenticated as
+github-deployer@subscription-shepard.iam.gserviceaccount.com
+```
+ 
+**Root cause**
+The GitHub Actions workflow's deploy step referenced a service account named `subscription-shepard-runtime`, which did not actually exist. The Cloud Run service's real runtime service account — the one manually created and selected while deploying through the Cloud Console's click-through flow — was named `subscription-shepard-runner`. Since `github-deployer` had no grant on an account that didn't exist, the deploy failed at the permission check.
+ 
+**Fix**
+1. Granted the `github-deployer` service account the **Service Account User** role directly on the correct, existing `subscription-shepard-runner` service account (IAM & Admin → Service Accounts → `subscription-shepard-runner` → Permissions → Grant Access).
+2. Corrected the `--service-account` value in `deploy.yml` from `subscription-shepard-runtime` to `subscription-shepard-runner`, matching the account that actually exists.
+Re-ran the workflow, which then deployed successfully.
+ 
+</details>
+---
+ 
+<details>
 <summary><strong>🟡 Local H2 in-memory data persisting across "restarts" in IntelliJ</strong></summary>
 <br>
 **Symptom**
 Registering a username that should have been unique failed with "Username already taken," even on what appeared to be a fresh app run.
  
 **Root cause**
-Spring Boot DevTools performs a "soft restart" when re-running the app in IntelliJ, it reloads application code inside the same still-running JVM process rather than starting a new one. Since the in-memory H2 database (`DB_CLOSE_DELAY=-1`) persists for the life of the JVM process, data survived across these soft restarts.
+Spring Boot DevTools performs a "soft restart" when re-running the app in IntelliJ — it reloads application code inside the same still-running JVM process rather than starting a new one. Since the in-memory H2 database (`DB_CLOSE_DELAY=-1`) persists for the life of the JVM process, data survived across these soft restarts.
  
 **Resolution**
-Not a bug, expected DevTools behavior. Confirmed by fully stopping the process (not just re-running) and observing the database correctly reset, which also confirmed the in-memory database resets on genuine Cloud Run cold starts, as intended.
+Not a bug — expected DevTools behavior. Confirmed by fully stopping the process (not just re-running) and observing the database correctly reset, which also confirmed the in-memory database resets on genuine Cloud Run cold starts, as intended.
  
 </details>
- 
