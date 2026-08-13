@@ -19,7 +19,7 @@ A full-stack subscription tracker built as a team capstone, independently contai
 ## At a Glance
  
 - **Deployed by hand first** configured the Cloud Run service, runtime identity, and networking manually through the GCP Console to understand each piece, before automating anything
-- **Zero stored credentials** CI/CD authenticates via Workload Identity Federation, not downloaded keys
+- **Short-lived Google Cloud credentials** CI/CD authenticates via Workload Identity Federation, not downloaded keys
 - **Containerized with a multi-stage Docker build**, verified locally before every deploy
 - **Push-to-deploy pipeline** every merge to `main` builds and ships automatically via GitHub Actions
 - **Every real bug documented** with root cause and fixes, see the [troubleshooting log](docs/TROUBLESHOOTING.md)
