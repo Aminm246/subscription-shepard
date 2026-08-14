@@ -10,7 +10,7 @@ A full-stack subscription tracker built as a team capstone, independently contai
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 [![Live](https://img.shields.io/badge/Live-subscription--shepard.run.app-34A853?style=for-the-badge&logo=googlecloud&logoColor=white)](https://subscription-shepard-210493677553.us-central1.run.app)
  
-**[Live Demo](https://subscription-shepard-210493677553.us-central1.run.app)** · **[Deployment Docs](docs/DEPLOYMENT.md)** · **[Troubleshooting Log](docs/TROUBLESHOOTING.md)**
+**[Live Demo](https://subscription-shepard-210493677553.us-central1.run.app/register)** · **[Deployment Docs](docs/DEPLOYMENT.md)** · **[Troubleshooting Log](docs/TROUBLESHOOTING.md)**
  
 ![Dashboard screenshot](docs/images/dashboard.png)
  
